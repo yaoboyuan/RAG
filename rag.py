@@ -1,12 +1,16 @@
 import os
+os.environ['USER_AGENT'] = 'myagent'
+
 import re
+import sys
 import bs4
+import time
 import argparse
 import tiktoken
+import warnings
 from tqdm.auto import tqdm, trange
 from langchain import hub
 from langchain.load import dumps, loads
-from langchain_community.document_loaders import PyMuPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
@@ -16,7 +20,7 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_chroma import Chroma
 from langchain_community.llms import LlamaCpp
-from langchain_community.document_loaders import WebBaseLoader, UnstructuredExcelLoader, UnstructuredCSVLoader
+from langchain_community.document_loaders import PyMuPDFLoader, UnstructuredExcelLoader, UnstructuredCSVLoader, WebBaseLoader
 
 class RAG:
     def __init__(self, model_path, docs_path, embedding_model, embedding_device, db_name):
@@ -92,11 +96,14 @@ def main():
     parser.add_argument('-dn', '--database_name', default = 'db_sae_story')
 
     args = parser.parse_args()
-    os.environ['USER_AGENT'] = 'myagent'
+    
+    if not sys.warnoptions:
+        warnings.simplefilter("ignore")
+    
     rag = RAG(args.model, args.docs_path, args.embed_model, args.device, args.database_name)
 
     if args.mode == 'rag':
-        print('[System Info] RAG inference mode:')
+        print('[System Info] RAG inference mode')
         while True:
             user_input = input('Enter a question (insert q to leave): ')
             if user_input == 'q':
@@ -104,7 +111,7 @@ def main():
             ans = rag.chain.invoke(user_input)
             print('\n')
     elif args.mode == 'llm':
-        print('[System Info] LLM inference mode:')
+        print('[System Info] LLM inference mode')
         while True:
             user_input = input('Enter a question (insert q to leave): ')
             if user_input == 'q':
