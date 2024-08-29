@@ -90,7 +90,7 @@ def main():
     )
     parser.add_argument('-mo', '--mode', default='rag')
     parser.add_argument('-m', '--model', default='./Llama-2-7b-chat-hf.gguf')
-    parser.add_argument('-em', '--embed_model', default='sentence-transformers/all-MiniLM-L6-v2')
+    parser.add_argument('-em', '--embed_model', default='../sentence-transformersall-MiniLM-L6-v2')
     parser.add_argument('-d', '--device', default='cpu')
     parser.add_argument('-dp', '--docs_path', default='./sae_story.pdf')
     parser.add_argument('-dn', '--database_name', default = 'db_sae_story')
